@@ -1,3 +1,4 @@
+``` Обработка данных
 import pandas as pd
 
 # Загрузка данных
@@ -35,3 +36,46 @@ print(f"Количество записей после фильтрации: {da
 data_filtered.to_csv("filtered_schedule_data.csv", index=False)
 
 print("Данные успешно очищены и отфильтрованы.")
+```
+
+def load_model(onnx_model_path):
+    # Загрузка модели
+    return ort.InferenceSession(onnx_model_path)
+
+def predict_trip_duration(model, input_data):
+    # Преобразуем входные данные
+    input_data = np.array(input_data).astype(np.float32).reshape(1, -1)
+    
+    # Получаем имя входного тензора
+    input_name = model.get_inputs()[0].name
+    
+    # Выполняем предсказание
+    prediction = model.run(None, {input_name: input_data})
+    
+    return prediction[0][0]
+
+def get_user_input():
+    # Получаем ввод от пользователя
+    try:
+        approach_time = float(input("Введите время подхода судна в минутах от начала суток: "))
+        departure_time = float(input("Введите время отхода судна в минутах от начала суток: "))
+        return [approach_time, departure_time]
+    except ValueError:
+        print("Ошибка: введите числовые значения для времени.")
+        return None
+
+def main():
+    # Загружаем модель
+    model_path = 'water_taxi_model.onnx'
+    model = load_model(model_path)
+    
+    # Получаем данные от пользователя
+    input_data = get_user_input()
+    
+    if input_data:
+        # Получаем предсказание
+        predicted_duration = predict_trip_duration(model, input_data)
+        print(f"Предсказанное время поездки: {predicted_duration:.2f} минут")
+
+if __name__ == "__main__":
+    main()
