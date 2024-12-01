@@ -1,4 +1,4 @@
-``` Обработка данных
+''' Обработка данных
 import pandas as pd
 
 # Загрузка данных
@@ -36,7 +36,7 @@ print(f"Количество записей после фильтрации: {da
 data_filtered.to_csv("filtered_schedule_data.csv", index=False)
 
 print("Данные успешно очищены и отфильтрованы.")
-```
+'''
 
 def load_model(onnx_model_path):
     # Загрузка модели
